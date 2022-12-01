@@ -109,38 +109,39 @@ def process_payloads(payloads):
             '') + 1  # find the first blank line, that is the one between headers and body, and add 1
         body = ''.join(to_process[p_body_start:])
         # TODO refactor, strategy and factory pattern can be applied here pattern
-        if p_headers["Content-Transfer-Encoding"] == "base64":
-            # Encoded 7-bit ASCII
-            print("base64")
-            decoded = process_content_tansfer_encoding_base64(body)
-            # print(decoded)
-            # WIP
-        elif p_headers["Content-Transfer-Encoding"] == "quoted-printable":
-            # Encoded 7-bit ASCII
-            print("quoted‑printable")
-            # WIP
-        elif p_headers["Content-Transfer-Encoding"] == "7bit":
-            # Unencoded 7-bit ASCII
-            print("7bit")
-            # WIP
-        elif p_headers["Content-Transfer-Encoding"] == "8bit":
-            # Unencoded 8-bit ASCII
-            print("8bit")
-            # WIP
-        elif p_headers["Content-Transfer-Encoding"] == "binary":
-            # Any data acceptable, no restrictions on character set
-            print("binary")
-            # WIP
+        if p_headers is not None and "Content-Transfer-Encoding" in p_headers:
+            if p_headers["Content-Transfer-Encoding"] == "base64":
+                # Encoded 7-bit ASCII
+                print("base64")
+                decoded = process_content_tansfer_encoding_base64(body)
+                # print(decoded)
+                # WIP
+            elif p_headers["Content-Transfer-Encoding"] == "quoted-printable":
+                # Encoded 7-bit ASCII
+                print("quoted‑printable")
+                # WIP
+            elif p_headers["Content-Transfer-Encoding"] == "7bit":
+                # Unencoded 7-bit ASCII
+                print("7bit")
+                # WIP
+            elif p_headers["Content-Transfer-Encoding"] == "8bit":
+                # Unencoded 8-bit ASCII
+                print("8bit")
+                # WIP
+            elif p_headers["Content-Transfer-Encoding"] == "binary":
+                # Any data acceptable, no restrictions on character set
+                print("binary")
+                # WIP
         colorize.printc("__END_ANALYSIS_PAY__" + str(i), "yellow")
 
 
 colorize = Colorize()
-with open("mail_test_4", mode="rt", encoding="utf-8") as email:
+with open("mail_test_5", mode="rt", encoding="utf-8") as email:
     content_lines = email.readlines()
     email.seek(0)
     whole_content = email.read()
 
 headers, payloads = parse_email(content_lines, whole_content, debug=False)
 print_parsed_headers(headers)
-#print_parsed_payloads(payloads)
+# print_parsed_payloads(payloads)
 process_payloads(payloads)
