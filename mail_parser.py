@@ -148,7 +148,7 @@ def process_payloads(payloads):
                 # slicing guarantees that the last blank line placed between body-end and closing-boundary-element is not considered part of the body
                 # itself, because slice operation does not include the right-end index, len(p_body_start) - 1 can be used
                 # join with \n because while it is useful not to have \n in lines in method parse_headers
-                # they are needed to correctly process the body in quoted-printable elements (e.g. HTML code)
+                # they are needed to correctly process the body in quoted-printable elements (e.g. HTML code) https://www.rfc-editor.org/rfc/rfc2045#section-6.7
                 body = '\n'.join(to_process[p_body_start:len(to_process) - 1])
                 print("quoted‑printable")
                 decoded = quopri.decodestring(body).decode("utf-8")
