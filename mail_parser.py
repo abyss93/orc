@@ -126,7 +126,7 @@ def process_payloads(payloads):
         colorize.printc("__ANALYSIS_PAYLOAD__" + str(i), "yellow")
         # https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
         # <<Each part starts with an encapsulation boundary, and then contains a body part consisting of header area, a blank line, and a body area>>
-        to_process = p.splitlines()
+        to_process = p.splitlines()  # I don't want newline chars during header processing, eventually restore them after, in quoted-printable for example
         p_headers = parse_headers(to_process, None)
         print_parsed_headers(p_headers)
         p_body_start = to_process.index(
