@@ -1,5 +1,7 @@
 import re
 import base64
+import hashlib
+import quopri
 from colorize import Colorize
 
 
@@ -13,12 +15,18 @@ def find_boundary(content):
     return res
 
 
+def find_urls(strint_to_check):
+    return re.findall(
+        r"(https?:\/\/www\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
+        strint_to_check)
+
+
 def parse_headers(content_lines, boundary, debug=False):
     headers = {}
     for line in content_lines:
-        # stops when payload is reached (= boundary appears)
-        # if line is the line where boundary is defined, goes on
-        # if line is empty header section is finished, so stops
+        # stops when payload is reached (= boundary appears), this is only to prevent non-rfc compliant cases, even if they are almost impossible to see
+        # if line is the line where boundary is defined, goes on, header are not finished yet
+        # if line is empty header section is finished (https://www.rfc-editor.org/rfc/rfc5322#section-3.5), so stops
         if (boundary is not None and ("--" + boundary) in line) or line == "":
             if debug: print("Header end")
             break
@@ -38,14 +46,15 @@ def parse_headers(content_lines, boundary, debug=False):
                 headers[header_key] = [headers[header_key]]
                 headers[header_key].append(header_value)
         # line starts with a blankspace, it is the following part of the last header found
-        elif line.startswith(" ") or line.startswith("\t"):
+        # https://www.rfc-editor.org/rfc/rfc5322#section-2.2.3
+        elif line.startswith(" "):
             if debug: print("Header next line found: " + line)
             # here header_jey is equal to the last processed header, so I can use the variable
             # if the current is an header that can appear multiple times AND its value can be defined on more than one row
             # here the script is processing the last header of that type in the headers-list, so the script pushes there
             if type(headers[header_key]) is list:
                 headers[header_key][len(headers[header_key]) - 1] += line.replace("\n", "")
-            # else it is an header that can appear only one time in the list,
+            # else it is a header that can appear only one time in the list,
             else:
                 headers[header_key] += line.replace("\n", "")
     return headers
@@ -106,6 +115,12 @@ def process_content_tansfer_encoding_base64(p_base64):
     return base64.b64decode(p_base64)
 
 
+def hashes_of(obj):
+    print("md5sum:    " + hashlib.md5(obj).hexdigest())
+    print("sha1sum:   " + hashlib.sha1(obj).hexdigest())
+    print("sha256sum: " + hashlib.sha256(obj).hexdigest())
+
+
 def process_payloads(payloads):
     for i, p in enumerate(payloads):
         colorize.printc("__ANALYSIS_PAYLOAD__" + str(i), "yellow")
@@ -116,42 +131,56 @@ def process_payloads(payloads):
         print_parsed_headers(p_headers)
         p_body_start = to_process.index(
             '') + 1  # find the first blank line, that is the one between headers and body, and add 1
-        body = ''.join(to_process[p_body_start:])
         # TODO refactor: strategy and factory pattern can be applied here
         if p_headers is not None and "Content-Transfer-Encoding" in p_headers:
             if p_headers["Content-Transfer-Encoding"] == "base64":
                 # Encoded 7-bit ASCII
-                print("base64")
+                # slicing guarantees that the last blank line placed between body-end and closing-boundary-element is not considered part of the body
+                # itself, because slice operation does not include the right-end index, len(p_body_start) - 1 can be used
+                # while joining with \n still works (decoded body has the same hash of decoded body joining with '')
+                # I prefer to remove line breaks
+                body = ''.join(to_process[p_body_start:len(to_process) - 1])
                 decoded = process_content_tansfer_encoding_base64(body)
-                # print(decoded)
-                # WIP
+                hashes_of(decoded)
+                # TODO
             elif p_headers["Content-Transfer-Encoding"] == "quoted-printable":
                 # Encoded 7-bit ASCII
+                # slicing guarantees that the last blank line placed between body-end and closing-boundary-element is not considered part of the body
+                # itself, because slice operation does not include the right-end index, len(p_body_start) - 1 can be used
+                # join with \n because while it is useful not to have \n in lines in method parse_headers
+                # they are needed to correctly process the body in quoted-printable elements (e.g. HTML code)
+                body = '\n'.join(to_process[p_body_start:len(to_process) - 1])
                 print("quoted‑printable")
-                # WIP
+                decoded = quopri.decodestring(body).decode("utf-8")
+                print(find_urls(decoded))
+                # TODO
             elif p_headers["Content-Transfer-Encoding"] == "7bit":
                 # Unencoded 7-bit ASCII
                 print("7bit")
-                # WIP
+                # TODO
             elif p_headers["Content-Transfer-Encoding"] == "8bit":
                 # Unencoded 8-bit ASCII
                 print("8bit")
-                # WIP
+                # TODO
             elif p_headers["Content-Transfer-Encoding"] == "binary":
                 # Any data acceptable, no restrictions on character set
                 print("binary")
-                # WIP
+                hashes_of(body)
+                # TODO
         colorize.printc("__END_ANALYSIS_PAY__" + str(i), "yellow")
 
 
 colorize = Colorize()
-with open("mail_test_2", mode="rt", encoding="utf-8") as email:
+with open("mail_test_4", mode="rt", encoding="utf-8") as email:
     content_lines = email.readlines()
     email.seek(0)
     whole_content = email.read()
 
 headers, payloads = parse_email(content_lines, whole_content, debug=False)
 print_parsed_headers(headers)
+
 if payloads is not None:
     # print_parsed_payloads(payloads)
     process_payloads(payloads)
+
+# print(find_email_urls(content_lines))
