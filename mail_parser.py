@@ -34,7 +34,8 @@ def parse_headers(content_lines, boundary, debug=False):
         if (boundary is not None and ("--" + boundary) in line) or (line == "\n"):
             if debug: print("Header end")
             break
-        check_line_header = re.search("(.*: )", line)
+        # header name filed format specs https://www.rfc-editor.org/rfc/rfc2822#section-2.2 , best regex of all time :)
+        check_line_header = re.search("([!-~]*: )", line)
         # the line contains a keyword that identifies a header
         if check_line_header is not None:
             if debug: print("Header line found: " + line)
@@ -51,7 +52,8 @@ def parse_headers(content_lines, boundary, debug=False):
                 headers[header_key].append(header_value)
         # line starts with a blankspace, it is the following part of the last header found
         # https://www.rfc-editor.org/rfc/rfc5322#section-2.2.3
-        elif line.startswith(" ") or line.startswith("\t"):
+        elif line.startswith(" "):
+            line = line[1:]  # remove first blank, don't need it
             if debug: print("Header next line found: " + line)
             # here header_jey is equal to the last processed header, so I can use the variable
             # if the current is an header that can appear multiple times AND its value can be defined on more than one row
@@ -74,6 +76,7 @@ def parse_payload(whole_content, boundary):
         # because the split removed all of its relatives. Remove the last boundary line, that has "--" appended after boundary as per RFC1341
         payloads[remove_boundary_from] = payloads[remove_boundary_from].replace("--" + boundary + "--\n", "")
         return payloads
+    return []  # no payloads defined with boundaries
 
 
 def print_parsed_headers(headers):
@@ -176,6 +179,15 @@ def process_payloads(payloads):
         colorize.printc("__END_ANALYSIS_PAY__" + str(i), "yellow")
 
 
+def print_text_plain(headers, whole_content):
+    colorize.printc("____TEXT_PLAIN____", "yellow")
+    whole_content_lines = whole_content.splitlines(True)
+    text_plain_index = whole_content_lines.index("\n") + 1  # end of headers section, plus 1 to exclude the \n line
+    text_plain = "".join(whole_content_lines[text_plain_index:])
+    print(text_plain)
+    colorize.printc("__END_TEXT_PLAIN__", "yellow")
+
+
 def forensic(headers, whole_content):
     if "Content-Length" in headers.keys():
         content_length = headers["Content-Length"]
@@ -212,9 +224,13 @@ with open(args.email_path, mode="rt", encoding="utf-8") as email:
 headers, payloads = parse_email(content_lines, whole_content, debug=False)
 if config["headers"]: print_parsed_headers(headers)
 
-if payloads is not None:
+if len(payloads) > 0:
     if config["print_payload"]: print_parsed_payloads(payloads)
     if config["payload_analysis"]: process_payloads(payloads)
+elif len(payloads) == 0:
+    if config["print_payload"]: print_text_plain(headers, whole_content)
+else:
+    print("No payloads found")
 
 # if config["find_urls"]: print(find_email_urls(content_lines))
 # forensic(headers, whole_content)
