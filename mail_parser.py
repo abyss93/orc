@@ -1,7 +1,10 @@
+#!/usr/bin/python3
+
 import re
 import base64
 import hashlib
 import quopri
+import argparse
 from colorize import Colorize
 
 
@@ -27,11 +30,12 @@ def parse_headers(content_lines, boundary, debug=False):
         # stops when payload is reached (= boundary appears), this is only to prevent non-rfc compliant cases, even if they are almost impossible to see
         # if line is the line where boundary is defined, goes on, header are not finished yet
         # if line is empty header section is finished (https://www.rfc-editor.org/rfc/rfc5322#section-3.5), so stops
-        if (boundary is not None and ("--" + boundary) in line) or line == "":
+        # if an email has empty lines between headers' lines it is not compliant with RFC
+        if (boundary is not None and ("--" + boundary) in line) or (line == "\n"):
             if debug: print("Header end")
             break
         check_line_header = re.search("(.*: )", line)
-        # the line contains a keyword that identifies an header
+        # the line contains a keyword that identifies a header
         if check_line_header is not None:
             if debug: print("Header line found: " + line)
             header_key = check_line_header.group().replace(": ", "")
@@ -47,7 +51,7 @@ def parse_headers(content_lines, boundary, debug=False):
                 headers[header_key].append(header_value)
         # line starts with a blankspace, it is the following part of the last header found
         # https://www.rfc-editor.org/rfc/rfc5322#section-2.2.3
-        elif line.startswith(" "):
+        elif line.startswith(" ") or line.startswith("\t"):
             if debug: print("Header next line found: " + line)
             # here header_jey is equal to the last processed header, so I can use the variable
             # if the current is an header that can appear multiple times AND its value can be defined on more than one row
@@ -126,19 +130,21 @@ def process_payloads(payloads):
         colorize.printc("__ANALYSIS_PAYLOAD__" + str(i), "yellow")
         # https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
         # <<Each part starts with an encapsulation boundary, and then contains a body part consisting of header area, a blank line, and a body area>>
-        to_process = p.splitlines()  # I don't want newline chars during header processing, eventually restore them after, in quoted-printable for example
+        to_process = p.splitlines(
+            True)  # I want newline chars during header processing, parse_headers need them to find the header section end
         p_headers = parse_headers(to_process, None)
         print_parsed_headers(p_headers)
         p_body_start = to_process.index(
-            '') + 1  # find the first blank line, that is the one between headers and body, and add 1
+            '\n') + 1  # find the first blank line, that is the one between headers and body, and add 1
         # TODO refactor: strategy and factory pattern can be applied here
+        if p_headers is not None and "Content-Type" not in p_headers:
+            # https://www.rfc-editor.org/rfc/rfc2045#section-5.2 defaults to: Content-type: text/plain; charset=us-ascii
+            print("text/plain")
         if p_headers is not None and "Content-Transfer-Encoding" in p_headers:
             if p_headers["Content-Transfer-Encoding"] == "base64":
                 # Encoded 7-bit ASCII
                 # slicing guarantees that the last blank line placed between body-end and closing-boundary-element is not considered part of the body
                 # itself, because slice operation does not include the right-end index, len(p_body_start) - 1 can be used
-                # while joining with \n still works (decoded body has the same hash of decoded body joining with '')
-                # I prefer to remove line breaks
                 body = ''.join(to_process[p_body_start:len(to_process) - 1])
                 decoded = process_content_tansfer_encoding_base64(body)
                 hashes_of(decoded)
@@ -149,7 +155,7 @@ def process_payloads(payloads):
                 # itself, because slice operation does not include the right-end index, len(p_body_start) - 1 can be used
                 # join with \n because while it is useful not to have \n in lines in method parse_headers
                 # they are needed to correctly process the body in quoted-printable elements (e.g. HTML code) https://www.rfc-editor.org/rfc/rfc2045#section-6.7
-                body = '\n'.join(to_process[p_body_start:len(to_process) - 1])
+                body = ''.join(to_process[p_body_start:len(to_process) - 1])
                 print("quoted‑printable")
                 decoded = quopri.decodestring(body).decode("utf-8")
                 print(find_urls(decoded))
@@ -170,17 +176,45 @@ def process_payloads(payloads):
         colorize.printc("__END_ANALYSIS_PAY__" + str(i), "yellow")
 
 
+def forensic(headers, whole_content):
+    if "Content-Length" in headers.keys():
+        content_length = headers["Content-Length"]
+        whole_content_lines = whole_content.splitlines(True)
+        end_of_header_section_index = whole_content_lines.index("\n")  # also start of payload section
+        end_of_payload_section = len(whole_content_lines)
+        payloads_as_string = "".join(whole_content_lines[end_of_header_section_index:end_of_payload_section])
+        print(len(payloads_as_string))
+
+
+LOGO = "           ▄▄▄   ▄▄·\n" \
+       "     ▪     ▀▄ █·▐█ ▌▪\n" \
+       "      ▄█▀▄ ▐▀▀▄ ██ ▄▄\n" \
+       "     ▐█▌.▐▌▐█•█▌▐███▌\n" \
+       "      ▀█▄▀▪.▀  ▀·▀▀▀\n"
+
+parser = argparse.ArgumentParser(description="Email forensic tool",
+                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser.add_argument("email_path", type=str, help="Path of the email to analyze")
+parser.add_argument("-H", "--headers", help="Print email headers in a friendly way", action="store_true")
+parser.add_argument("-p", "--print-payload", help="Print email payloads as they are", action="store_true")
+parser.add_argument("-a", "--payload-analysis", help="Payload analysis", action="store_true")
+parser.add_argument("-u", "--find-urls", help="Search for URLs", action="store_true")
+args = parser.parse_args()
+config = vars(args)
+print(LOGO)
+
 colorize = Colorize()
-with open("mail_test_4", mode="rt", encoding="utf-8") as email:
+with open(args.email_path, mode="rt", encoding="utf-8") as email:
     content_lines = email.readlines()
     email.seek(0)
     whole_content = email.read()
 
 headers, payloads = parse_email(content_lines, whole_content, debug=False)
-print_parsed_headers(headers)
+if config["headers"]: print_parsed_headers(headers)
 
 if payloads is not None:
-    # print_parsed_payloads(payloads)
-    process_payloads(payloads)
+    if config["print_payload"]: print_parsed_payloads(payloads)
+    if config["payload_analysis"]: process_payloads(payloads)
 
-# print(find_email_urls(content_lines))
+# if config["find_urls"]: print(find_email_urls(content_lines))
+# forensic(headers, whole_content)

@@ -1,4 +1,4 @@
-# orc [WIP]
+<h1><img src="https://github.com/santinilorenzo/orc/blob/master/logo/orc.png?raw=true"> ORC</h1>
 Quick and dirty email header and body parser.
 
 Just like an Orc, this script is ugly, probably it won't have unit tests, unless parse operation becomes difficult: only trying to parse many mails will tell.
