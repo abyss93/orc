@@ -19,9 +19,14 @@ def find_boundary(content):
 
 
 def find_urls(strint_to_check):
-    return re.findall(
-        r"(https?:\/\/www\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
+    urls = re.findall(
+        r"((http|https)?:\/\/[www]?\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
         strint_to_check)
+    if urls is not None and len(urls) > 0:
+        colorize.printc("____URLs____", "magenta")
+        for url in urls:
+            print(url[0].replace(".", "[.]").replace(":", ": "))
+        colorize.printc("__END_URLs__", "magenta")
 
 
 def parse_headers(content_lines, boundary, debug=False):
@@ -123,12 +128,17 @@ def process_content_tansfer_encoding_base64(p_base64):
 
 
 def hashes_of(obj):
-    print("md5sum:    " + hashlib.md5(obj).hexdigest())
-    print("sha1sum:   " + hashlib.sha1(obj).hexdigest())
-    print("sha256sum: " + hashlib.sha256(obj).hexdigest())
+    colorize.printc("____HASHES____", "magenta")
+    md5 = hashlib.md5(obj).hexdigest()
+    sha1 = hashlib.sha1(obj).hexdigest()
+    sha256 = hashlib.sha256(obj).hexdigest()
+    print("md5sum: {:80} -> PIVOT TO VT: https://www.virustotal.com/gui/search/{:}".format(md5, md5))
+    print("sha1sum: {:79} -> PIVOT TO VT: https://www.virustotal.com/gui/search/{:}".format(sha1, sha1))
+    print("sha256sum: {:77} -> PIVOT TO VT: https://www.virustotal.com/gui/search/{:}".format(sha256, sha256))
+    colorize.printc("__END_HASHES__", "magenta")
 
 
-def process_payloads(payloads):
+def process_payloads(payloads, find_urls_conf):
     for i, p in enumerate(payloads):
         colorize.printc("__ANALYSIS_PAYLOAD__" + str(i), "yellow")
         # https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
@@ -161,7 +171,7 @@ def process_payloads(payloads):
                 body = ''.join(to_process[p_body_start:len(to_process) - 1])
                 print("quoted‑printable")
                 decoded = quopri.decodestring(body).decode("utf-8")
-                print(find_urls(decoded))
+                if find_urls_conf: find_urls(decoded)
                 # TODO
             elif p_headers["Content-Transfer-Encoding"] == "7bit":
                 # Unencoded 7-bit ASCII
@@ -202,7 +212,8 @@ LOGO = "           ▄▄▄   ▄▄·\n" \
        "     ▪     ▀▄ █·▐█ ▌▪\n" \
        "      ▄█▀▄ ▐▀▀▄ ██ ▄▄\n" \
        "     ▐█▌.▐▌▐█•█▌▐███▌\n" \
-       "      ▀█▄▀▪.▀  ▀·▀▀▀\n"
+       "      ▀█▄▀▪.▀  ▀·▀▀▀\n" \
+       "_____________________\n"
 
 parser = argparse.ArgumentParser(description="Email forensic tool",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -226,11 +237,10 @@ if config["headers"]: print_parsed_headers(headers)
 
 if len(payloads) > 0:
     if config["print_payload"]: print_parsed_payloads(payloads)
-    if config["payload_analysis"]: process_payloads(payloads)
+    if config["payload_analysis"]: process_payloads(payloads, config["find_urls"])
 elif len(payloads) == 0:
     if config["print_payload"]: print_text_plain(headers, whole_content)
 else:
     print("No payloads found")
 
-# if config["find_urls"]: print(find_email_urls(content_lines))
 # forensic(headers, whole_content)
