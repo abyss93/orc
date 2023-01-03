@@ -39,7 +39,7 @@ Opening mail with this tool should be safe enough, EML files are read and interp
 <ul>
 <li>Integration with other tools (phishtank, talos, etc)</li>
 <li>Better payload analysis (magic bytes, internal URLs, internal JS, etc)</li>
-<li>Code quality and test coverage</li>
+<li>Code quality (remove duplication, use patterns, etc) and test coverage</li>
 <li>Better debug output</li>
 <li>Colors stdout</li>
 </ul>
