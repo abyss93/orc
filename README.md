@@ -24,12 +24,16 @@ optional arguments:
 ```
 
 <h3>Notes</h3>
-Just like an Orc, this script is ugly. Probably it won't have unit tests, unless parse operation becomes difficult: only trying to parse many mails (and time) will tell.
+Quick and dirty email forensic tool. Probably it won't have unit tests, unless parse operation becomes difficult: only trying to parse many mails (and time) will tell.
 Also design patterns and sw-eng best practices are not the priority, at least until the script complexity remains acceptable.
 Purpose of this tool is to have an automatic help to perform phishing/spam mail analysis looking at headers and body content. What I want to do is automatically decode base64 (and other types of encodings) mail content to verify if it is legit or not. I also want to extract URLs, eventually decode them (phishing mails often contains 'strange' URLs) and IPs, then do some automatic query on the web to find reputation etc.
 
+I've written this tool while reading SMTP, MIME and Internet Messages RFCs. I'll try to stay as RFC-Compliant as I can while improving this.
+
+I'm not a Python expert, and this is also another reason why I started this work.
+
 <h3>Security</h3>
-Opening mail with this tool should be safe enough, because EML files are read and interpreted as text files, so nothing will be executed and nothing malicious should be triggered unless Python itself contains vulnerable code in the file read method (very unlikely, but nothing is impossible).
+Opening mail with this tool should be safe enough, EML files are read and interpreted as text files, so nothing will be executed and nothing malicious should be triggered unless Python itself contains vulnerable code in the file read method (very unlikely, but nothing is impossible).
 
 <h3>Next...</h3>
 <ul>
