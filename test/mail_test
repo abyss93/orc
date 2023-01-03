@@ -1,0 +1,86 @@
+Received: recipient
+Received: HOP
+Received: sender
+MIME-Version: 1.0
+Date: Tue, 3 Jan 2023 HH:MM:SS +0100
+Message-ID: <ID=ID@mail.com>
+Subject: TEST attachments and inline image (as small as possible)
+From: pippo <pippo@mail.com>
+To: pluto <pluto@mail.com>
+Content-Type: multipart/mixed; boundary="000000000000d0d9b205f15cc286"
+
+--000000000000d0d9b205f15cc286
+Content-Type: multipart/related; boundary="000000000000d0d9b105f15cc285"
+
+--000000000000d0d9b105f15cc285
+Content-Type: multipart/alternative; boundary="000000000000d0d9ae05f15cc284"
+
+--000000000000d0d9ae05f15cc284
+Content-Type: text/plain; charset="UTF-8"
+
+[image: test_png.png]
+
+--000000000000d0d9ae05f15cc284
+Content-Type: text/html; charset="UTF-8"
+
+<div dir="ltr"><img src="cid:ii_lcgbgud42" alt="test_png.png" width="1" height="1"><br><br></div>
+
+--000000000000d0d9ae05f15cc284--
+--000000000000d0d9b105f15cc285
+Content-Type: image/png; name="test_png.png"
+Content-Disposition: attachment; filename="test_png.png"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: ii_lcgbgud42
+Content-ID: <ii_lcgbgud42>
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9
+kT1Iw1AUhU9TxaJVBzuIOGSoThZERRy1CkWoEGqFVh1MXvoHTRqSFBdHwbXg4M9i1cHFWVcHV0EQ
+/AFxdXFSdJES70sKLWK88Hgf591zeO8+QKiXmWZ1jAOabpupRFzMZFfFrlcEEEQfehCSmWXMSVIS
+vvV1T91UdzGe5d/3Z/WqOYsBAZF4lhmmTbxBPL1pG5z3iSOsKKvE58RjJl2Q+JHrisdvnAsuCzwz
+YqZT88QRYrHQxkobs6KpEU8RR1VNp3wh47HKeYuzVq6y5j35C8M5fWWZ67SGkcAiliBBhIIqSijD
+Rox2nRQLKTqP+/iHXL9ELoVcJTByLKACDbLrB/+D37O18pMTXlI4DnS+OM7HCNC1CzRqjvN97DiN
+EyD4DFzpLX+lDsx8kl5radEjoH8buLhuacoecLkDDD4Zsim7UpCWkM8D72f0TVlg4BboXvPm1jzH
+6QOQplklb4CDQ2C0QNnrPu8Otc/t357m/H4Azh5yZfcZadIAAAAJcEhZcwAALiMAAC4jAXilP3YA
+AAAHdElNRQfnAQMODCvi15yCAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAA
+AAxJREFUCNdj+P//PwAF/gL+3MxZ5wAAAABJRU5ErkJggg==
+--000000000000d0d9b105f15cc285--
+--000000000000d0d9b205f15cc286
+Content-Type: application/pdf; name="test.pdf"
+Content-Disposition: attachment; filename="test.pdf"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_lcgbgd2f0
+Content-ID: <f_lcgbgd2f0>
+
+JVBERi0xLjUKJbXtrvsKNCAwIG9iago8PCAvTGVuZ3RoIDUgMCBSCiAgIC9GaWx0ZXIgL0ZsYXRl
+RGVjb2RlCj4+CnN0cmVhbQp4nDNUMABCXUMQpWdkopCcy1XIFcgFADCwBFQKZW5kc3RyZWFtCmVu
+ZG9iago1IDAgb2JqCiAgIDI3CmVuZG9iagozIDAgb2JqCjw8Cj4+CmVuZG9iagoyIDAgb2JqCjw8
+IC9UeXBlIC9QYWdlICUgMQogICAvUGFyZW50IDEgMCBSCiAgIC9NZWRpYUJveCBbIDAgMCAwLjI0
+IDAuMjQgXQogICAvQ29udGVudHMgNCAwIFIKICAgL0dyb3VwIDw8CiAgICAgIC9UeXBlIC9Hcm91
+cAogICAgICAvUyAvVHJhbnNwYXJlbmN5CiAgICAgIC9JIHRydWUKICAgICAgL0NTIC9EZXZpY2VS
+R0IKICAgPj4KICAgL1Jlc291cmNlcyAzIDAgUgo+PgplbmRvYmoKMSAwIG9iago8PCAvVHlwZSAv
+UGFnZXMKICAgL0tpZHMgWyAyIDAgUiBdCiAgIC9Db3VudCAxCj4+CmVuZG9iago2IDAgb2JqCjw8
+IC9Qcm9kdWNlciAoY2Fpcm8gMS4xNy40IChodHRwczovL2NhaXJvZ3JhcGhpY3Mub3JnKSkKICAg
+L0NyZWF0aW9uRGF0ZSAoRDoyMDIzMDEwMzE1MTE1OSswMScwMCkKPj4KZW5kb2JqCjcgMCBvYmoK
+PDwgL1R5cGUgL0NhdGFsb2cKICAgL1BhZ2VzIDEgMCBSCj4+CmVuZG9iagp4cmVmCjAgOAowMDAw
+MDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAzODEgMDAwMDAgbiAKMDAwMDAwMDE2MSAwMDAwMCBuIAow
+MDAwMDAwMTQwIDAwMDAwIG4gCjAwMDAwMDAwMTUgMDAwMDAgbiAKMDAwMDAwMDExOSAwMDAwMCBu
+IAowMDAwMDAwNDQ2IDAwMDAwIG4gCjAwMDAwMDA1NjIgMDAwMDAgbiAKdHJhaWxlcgo8PCAvU2l6
+ZSA4CiAgIC9Sb290IDcgMCBSCiAgIC9JbmZvIDYgMCBSCj4+CnN0YXJ0eHJlZgo2MTQKJSVFT0YK
+--000000000000d0d9b205f15cc286
+Content-Type: image/png; name="test_png.png"
+Content-Disposition: attachment; filename="test_png.png"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_lcgbgkmy1
+Content-ID: <f_lcgbgkmy1>
+
+iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9
+kT1Iw1AUhU9TxaJVBzuIOGSoThZERRy1CkWoEGqFVh1MXvoHTRqSFBdHwbXg4M9i1cHFWVcHV0EQ
+/AFxdXFSdJES70sKLWK88Hgf591zeO8+QKiXmWZ1jAOabpupRFzMZFfFrlcEEEQfehCSmWXMSVIS
+vvV1T91UdzGe5d/3Z/WqOYsBAZF4lhmmTbxBPL1pG5z3iSOsKKvE58RjJl2Q+JHrisdvnAsuCzwz
+YqZT88QRYrHQxkobs6KpEU8RR1VNp3wh47HKeYuzVq6y5j35C8M5fWWZ67SGkcAiliBBhIIqSijD
+Rox2nRQLKTqP+/iHXL9ELoVcJTByLKACDbLrB/+D37O18pMTXlI4DnS+OM7HCNC1CzRqjvN97DiN
+EyD4DFzpLX+lDsx8kl5radEjoH8buLhuacoecLkDDD4Zsim7UpCWkM8D72f0TVlg4BboXvPm1jzH
+6QOQplklb4CDQ2C0QNnrPu8Otc/t357m/H4Azh5yZfcZadIAAAAJcEhZcwAALiMAAC4jAXilP3YA
+AAAHdElNRQfnAQMODCvi15yCAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAA
+AAxJREFUCNdj+P//PwAF/gL+3MxZ5wAAAABJRU5ErkJggg==
+--000000000000d0d9b205f15cc286--

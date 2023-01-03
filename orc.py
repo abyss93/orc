@@ -5,7 +5,6 @@ import base64
 import hashlib
 import quopri
 import argparse
-from colorize import Colorize
 
 
 def find_boundary(content):
@@ -15,6 +14,11 @@ def find_boundary(content):
         if boundary_check is not None:
             res = boundary_check.group().replace("boundary=\"", "").replace("\"", "")
             break
+        else:  # sometimes boundary is not enclosed in a couple of "
+            boundary_check = re.search("boundary=((.+))", line)
+            if boundary_check is not None:
+                res = boundary_check.group().replace("boundary=", "")
+                break
     return res
 
 
@@ -23,10 +27,10 @@ def find_urls(strint_to_check):
         r"((http|https)?:\/\/[www]?\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
         strint_to_check)
     if urls is not None and len(urls) > 0:
-        colorize.printc("____URLs____", "magenta")
+        print("____URLs____")
         for url in urls:
             print(url[0].replace(".", "[.]").replace(":", ": "))
-        colorize.printc("__END_URLs__", "magenta")
+        print("__END_URLs__")
 
 
 def parse_headers(content_lines, boundary, debug=False):
@@ -39,8 +43,8 @@ def parse_headers(content_lines, boundary, debug=False):
         if (boundary is not None and ("--" + boundary) in line) or (line == "\n"):
             if debug: print("Header end")
             break
-        # header name filed format specs https://www.rfc-editor.org/rfc/rfc2822#section-2.2 , best regex of all time :)
-        check_line_header = re.search("([!-~]*: )", line)
+        # header name field format specs https://www.rfc-editor.org/rfc/rfc2822#section-2.2 , best regex of all time :)
+        check_line_header = re.search("(^[!-~]*: )", line)
         # the line contains a keyword that identifies a header
         if check_line_header is not None:
             if debug: print("Header line found: " + line)
@@ -57,7 +61,7 @@ def parse_headers(content_lines, boundary, debug=False):
                 headers[header_key].append(header_value)
         # line starts with a blankspace, it is the following part of the last header found
         # https://www.rfc-editor.org/rfc/rfc5322#section-2.2.3
-        elif line.startswith(" "):
+        elif line.startswith(" ") or line.startswith("\t"):
             line = line[1:]  # remove first blank, don't need it
             if debug: print("Header next line found: " + line)
             # here header_jey is equal to the last processed header, so I can use the variable
@@ -79,7 +83,7 @@ def parse_payload(whole_content, boundary):
         remove_boundary_from = len(payloads) - 1
         # a split like the one above leaves the closing boundary (that is --boundary--\n) in the last element of the array, that final boundary must be removed
         # because the split removed all of its relatives. Remove the last boundary line, that has "--" appended after boundary as per RFC1341
-        payloads[remove_boundary_from] = payloads[remove_boundary_from].replace("--" + boundary + "--\n", "")
+        payloads[remove_boundary_from] = payloads[remove_boundary_from].replace("--" + boundary + "--", "")
         return payloads
     return []  # no payloads defined with boundaries
 
@@ -87,33 +91,42 @@ def parse_payload(whole_content, boundary):
 def print_parsed_headers(headers):
     for k, v in headers.items():
         # TODO refator: make function to group common code
-        if k == "Received":  # https://www.rfc-editor.org/rfc/rfc5321.html#section-4.4
+        if k == "Received" and isinstance(v, list):  # https://www.rfc-editor.org/rfc/rfc5321.html#section-4.4
             for i, r in enumerate(v):
-                colorize.printc("{:<30}".format(k), "blue", end="")
+                print("{:<30}".format(k), end="")
                 # hop 0 = email destination ; hop X (biggest one) = email source
-                colorize.printc("hop {:<26}".format(i), "blue", end="")
-                colorize.printc("{:}".format(r), "blue")
+                print("hop {:<26}".format(i), end="")
+                print("{:}".format(r))
+        elif k == "Received" and isinstance(v, str):
+            print("{:<30}".format(k), end="")
+            # hop 0 = email destination ; hop X (biggest one) = email source
+            print("hop {:<26}".format(0), end="")
+            print("{:}".format(v))
         elif k == "From" and isinstance(v,
                                         list):  # https://stackoverflow.com/questions/21480430/can-a-message-have-multiple-senders
             for i, r in enumerate(v):
-                colorize.printc("{:<30}".format(k), "blue", end="")
-                colorize.printc("originator {:<19}".format(i), "blue", end="")
-                colorize.printc("{:}".format(r), "blue")
+                print("{:<30}".format(k), end="")
+                print("originator {:<19}".format(i), end="")
+                print("{:}".format(r))
         elif k == "DKIM-Signature" and isinstance(v,
                                                   list):  # https://www.rfc-editor.org/rfc/rfc7489#section-3.1.1
             for i, r in enumerate(v):
-                colorize.printc("{:<30}".format(k), "blue", end="")
-                colorize.printc("signature {:<19}".format(i), "blue", end="")
-                colorize.printc("{:}".format(r), "blue")
+                print("{:<30}".format(k), end="")
+                print("signature {:<19}".format(i), end="")
+                print("{:}".format(r), "blue")
+        elif isinstance(v, list):  # https://www.rfc-editor.org/rfc/rfc7489#section-3.1.1
+            for i, r in enumerate(v):
+                print("{:<30}".format(k), end="")
+                print("{:}".format(r))
         else:
             print("{:<60}{:<50}".format(k, v))
 
 
 def print_parsed_payloads(payloads):
     for i, p in enumerate(payloads):
-        colorize.printc("__PAYLOAD__" + str(i), "red")
+        print("__PAYLOAD__" + str(i))
         print(p)
-        colorize.printc("__END_PAY__" + str(i), "red")
+        print("__END_PAY__" + str(i))
 
 
 def parse_email(content_lines, whole_content, debug):
@@ -128,19 +141,20 @@ def process_content_tansfer_encoding_base64(p_base64):
 
 
 def hashes_of(obj):
-    colorize.printc("____HASHES____", "magenta")
+    print("____HASHES____")
     md5 = hashlib.md5(obj).hexdigest()
     sha1 = hashlib.sha1(obj).hexdigest()
     sha256 = hashlib.sha256(obj).hexdigest()
     print("md5sum: {:80} -> PIVOT TO VT: https://www.virustotal.com/gui/search/{:}".format(md5, md5))
     print("sha1sum: {:79} -> PIVOT TO VT: https://www.virustotal.com/gui/search/{:}".format(sha1, sha1))
     print("sha256sum: {:77} -> PIVOT TO VT: https://www.virustotal.com/gui/search/{:}".format(sha256, sha256))
-    colorize.printc("__END_HASHES__", "magenta")
+    print("__END_HASHES__")
 
 
-def process_payloads(payloads, find_urls_conf):
+def process_payloads(payloads, find_urls_conf, nest_level=-1):
+    nest_level += 1
     for i, p in enumerate(payloads):
-        colorize.printc("__ANALYSIS_PAYLOAD__" + str(i), "yellow")
+        print("__ANALYSIS_PAYLOAD__" + str(nest_level) + "_" + str(i))
         # https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
         # <<Each part starts with an encapsulation boundary, and then contains a body part consisting of header area, a blank line, and a body area>>
         to_process = p.splitlines(
@@ -153,12 +167,16 @@ def process_payloads(payloads, find_urls_conf):
         if p_headers is not None and "Content-Type" not in p_headers:
             # https://www.rfc-editor.org/rfc/rfc2045#section-5.2 defaults to: Content-type: text/plain; charset=us-ascii
             print("text/plain")
+        if p_headers is not None and p_headers["Content-Type"] is not None and "boundary" in p_headers["Content-Type"]:
+            # nested payload, another boundary
+            nested_headers, nested_payloads = parse_email(to_process, p, False)
+            process_payloads(nested_payloads, find_urls_conf, nest_level)
         if p_headers is not None and "Content-Transfer-Encoding" in p_headers:
             if p_headers["Content-Transfer-Encoding"] == "base64":
                 # Encoded 7-bit ASCII
                 # slicing guarantees that the last blank line placed between body-end and closing-boundary-element is not considered part of the body
                 # itself, because slice operation does not include the right-end index, len(p_body_start) - 1 can be used
-                body = ''.join(to_process[p_body_start:len(to_process) - 1])
+                body = ''.join(to_process[p_body_start:len(to_process)])
                 decoded = process_content_tansfer_encoding_base64(body)
                 hashes_of(decoded)
                 # TODO
@@ -186,16 +204,16 @@ def process_payloads(payloads, find_urls_conf):
                 print("binary")
                 hashes_of(body)
                 # TODO
-        colorize.printc("__END_ANALYSIS_PAY__" + str(i), "yellow")
+        print("__END_ANALYSIS_PAY__" + str(nest_level) + "_" + str(i))
 
 
 def print_text_plain(headers, whole_content):
-    colorize.printc("____TEXT_PLAIN____", "yellow")
+    print("____TEXT_PLAIN____")
     whole_content_lines = whole_content.splitlines(True)
     text_plain_index = whole_content_lines.index("\n") + 1  # end of headers section, plus 1 to exclude the \n line
     text_plain = "".join(whole_content_lines[text_plain_index:])
     print(text_plain)
-    colorize.printc("__END_TEXT_PLAIN__", "yellow")
+    print("__END_TEXT_PLAIN__")
 
 
 def forensic(headers, whole_content):
@@ -208,39 +226,44 @@ def forensic(headers, whole_content):
         print(len(payloads_as_string))
 
 
-LOGO = "           ▄▄▄   ▄▄·\n" \
-       "     ▪     ▀▄ █·▐█ ▌▪\n" \
-       "      ▄█▀▄ ▐▀▀▄ ██ ▄▄\n" \
-       "     ▐█▌.▐▌▐█•█▌▐███▌\n" \
-       "      ▀█▄▀▪.▀  ▀·▀▀▀\n" \
-       "_____________________\n"
+def execute(email_path, params):
+    with open(email_path, mode="rt", encoding="utf-8") as email:
+        content_lines = email.readlines()
+        email.seek(0)
+        whole_content = email.read()
 
-parser = argparse.ArgumentParser(description="Email forensic tool",
-                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-parser.add_argument("email_path", type=str, help="Path of the email to analyze")
-parser.add_argument("-H", "--headers", help="Print email headers in a friendly way", action="store_true")
-parser.add_argument("-p", "--print-payload", help="Print email payloads as they are", action="store_true")
-parser.add_argument("-a", "--payload-analysis", help="Payload analysis", action="store_true")
-parser.add_argument("-u", "--find-urls", help="Search for URLs", action="store_true")
-args = parser.parse_args()
-config = vars(args)
-print(LOGO)
+    headers, payloads = parse_email(content_lines, whole_content, debug=params["debug"])
+    if params["headers"]: print_parsed_headers(headers)
 
-colorize = Colorize()
-with open(args.email_path, mode="rt", encoding="utf-8") as email:
-    content_lines = email.readlines()
-    email.seek(0)
-    whole_content = email.read()
+    if len(payloads) > 0:
+        if params["print_payload"]: print_parsed_payloads(payloads)
+        if params["payload_analysis"]: process_payloads(payloads, params["find_urls"])
+    elif len(payloads) == 0:
+        if params["print_payload"]: print_text_plain(headers, whole_content)
+    else:
+        print("No payloads found")
 
-headers, payloads = parse_email(content_lines, whole_content, debug=False)
-if config["headers"]: print_parsed_headers(headers)
+    # forensic(headers, whole_content)
 
-if len(payloads) > 0:
-    if config["print_payload"]: print_parsed_payloads(payloads)
-    if config["payload_analysis"]: process_payloads(payloads, config["find_urls"])
-elif len(payloads) == 0:
-    if config["print_payload"]: print_text_plain(headers, whole_content)
-else:
-    print("No payloads found")
 
-# forensic(headers, whole_content)
+if __name__ == "__main__":
+    LOGO = "           ▄▄▄   ▄▄·\n" \
+           "     ▪     ▀▄ █·▐█ ▌▪\n" \
+           "      ▄█▀▄ ▐▀▀▄ ██ ▄▄\n" \
+           "     ▐█▌.▐▌▐█•█▌▐███▌\n" \
+           "      ▀█▄▀▪.▀  ▀·▀▀▀\n" \
+           "_____________________\n"
+
+    parser = argparse.ArgumentParser(description="Email forensic tool",
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser.add_argument("email_path", type=str, help="Path of the email to analyze")
+    parser.add_argument("-H", "--headers", help="Print email headers in a friendly way", action="store_true")
+    parser.add_argument("-p", "--print-payload", help="Print email payloads as they are", action="store_true")
+    parser.add_argument("-a", "--payload-analysis", help="Payload analysis", action="store_true")
+    parser.add_argument("-u", "--find-urls", help="Search for URLs", action="store_true")
+    parser.add_argument("-d", "--debug", help="Debug info to stdout", action="store_true")
+    args = parser.parse_args()
+    config = vars(args)
+    print(LOGO)
+
+    execute(args.email_path, config)
