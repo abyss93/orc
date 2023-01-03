@@ -32,6 +32,10 @@ Purpose of this tool is to have an automatic help to perform phishing/spam mail 
 Opening mail with this tool should be safe enough, because EML files are read and interpreted as text files, so nothing will be executed and nothing malicious should be triggered unless Python itself contains vulnerable code in the file read method (very unlikely, but nothing is impossible).
 
 <h3>Next...</h3>
-- Integration with other tools (phishtank, talos, etc)
-- Better payload analysis (magic bytes, internal URLs, internal JS, etc)
-- Code quality and test coverage
+<ul>
+<li>Integration with other tools (phishtank, talos, etc)</li>
+<li>Better payload analysis (magic bytes, internal URLs, internal JS, etc)</li>
+<li>Code quality and test coverage</li>
+<li>Better debug output</li>
+<li>Colors stdout</li>
+</ul>
