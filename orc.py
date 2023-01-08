@@ -11,7 +11,7 @@ from content_transfer_encoding_strategies.strategy_8bit import Strategy8bit
 from content_transfer_encoding_strategies.strategy_base64 import StrategyBase64
 from content_transfer_encoding_strategies.strategy_binary import StrategyBinary
 from content_transfer_encoding_strategies.strategy_quoted_printable import StrategyQuotedPrintable
-from utils.hash_service import Utils
+from utils.utils import Utils
 from utils.logger import Logger
 
 
