@@ -13,6 +13,6 @@ class StrategyBase64:
         decoded = base64.b64decode(body)
         if self.config["debug"]: self.logger.log(body)
         self.utils.hashes_of(decoded)
-        print(decoded)
-        if self.config["find_urls"]: self.utils.find_urls(decoded)
+        # print(decoded)
+        # if self.config["find_urls"]: self.utils.find_urls(decoded)
         # TODO

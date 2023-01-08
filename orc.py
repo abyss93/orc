@@ -2,8 +2,6 @@
 
 import argparse
 import base64
-import hashlib
-import quopri
 import re
 
 from content_transfer_encoding_strategies.strategy_7bit import Strategy7bit
@@ -11,15 +9,8 @@ from content_transfer_encoding_strategies.strategy_8bit import Strategy8bit
 from content_transfer_encoding_strategies.strategy_base64 import StrategyBase64
 from content_transfer_encoding_strategies.strategy_binary import StrategyBinary
 from content_transfer_encoding_strategies.strategy_quoted_printable import StrategyQuotedPrintable
-from utils.utils import Utils
 from utils.logger import Logger
-
-
-
-def p_debug(debug):
-    print("DEBUG>>>")
-    print(debug)
-    print(">>>DEBUG")
+from utils.utils import Utils
 
 
 def find_boundary(content, logger):
@@ -35,17 +26,6 @@ def find_boundary(content, logger):
                 res = boundary_check.group().replace("boundary=", "")
                 break
     return res
-
-
-def find_urls(string_to_check):
-    urls = re.findall(
-        r"((http|https)?:\/\/[www]?\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
-        string_to_check)
-    if urls is not None and len(urls) > 0:
-        print("____URLs____")
-        for url in urls:
-            print(url[0].replace(".", "[.]").replace(":", ": "))
-        print("__END_URLs__")
 
 
 def parse_headers(content_lines, boundary, logger):
@@ -135,22 +115,7 @@ def parse_email(content_lines, whole_content, logger):
     return headers, payloads
 
 
-def process_content_tansfer_encoding_base64(p_base64):
-    return base64.b64decode(p_base64)
-
-
-def hashes_of(obj):
-    print("____HASHES____")
-    md5 = hashlib.md5(obj).hexdigest()
-    sha1 = hashlib.sha1(obj).hexdigest()
-    sha256 = hashlib.sha256(obj).hexdigest()
-    print("md5sum: {:80} -> PIVOT TO VT: https://www.virustotal.com/gui/search/{:}".format(md5, md5))
-    print("sha1sum: {:79} -> PIVOT TO VT: https://www.virustotal.com/gui/search/{:}".format(sha1, sha1))
-    print("sha256sum: {:77} -> PIVOT TO VT: https://www.virustotal.com/gui/search/{:}".format(sha256, sha256))
-    print("__END_HASHES__")
-
-
-def process_payloads(payloads, utils, logger, nest_level=-1):
+def process_payloads(payloads, utils, logger, payload_strategies, nest_level=-1):
     nest_level += 1
     for i, p in enumerate(payloads):
         print("__ANALYSIS_PAYLOAD__" + str(nest_level) + "_" + str(i))
@@ -171,45 +136,13 @@ def process_payloads(payloads, utils, logger, nest_level=-1):
                 "boundary" in p_headers["Content-Type"][0]:  # [0] -> only one Content-Type is admitted
             # nested payload, another boundary
             nested_headers, nested_payloads = parse_email(to_process, p, logger)
-            process_payloads(nested_payloads, utils, logger, nest_level)
+            process_payloads(nested_payloads, utils, logger, payload_strategies, nest_level)
         if p_headers is not None and "Content-Transfer-Encoding" in p_headers:
-            # try:
-            #     print(p_headers["Content-Transfer-Encoding"][0])
-            #     PAYLOAD_STRATEGIES[p_headers["Content-Transfer-Encoding"][0]]
-            # except KeyError:
-            #     print("Invalid Content-Transfer-Encoding")
+            try:
+                payload_strategies[p_headers["Content-Transfer-Encoding"][0]].process(to_process, p_body_start)
+            except KeyError:
+                print("Error: invalid Content-Transfer-Encoding header value")
 
-            if "base64" in p_headers["Content-Transfer-Encoding"]:
-                # Encoded 7-bit ASCII
-                body = ''.join(to_process[p_body_start:]).replace("\n", "")
-                decoded = process_content_tansfer_encoding_base64(body)
-                logger.log(body)
-                hashes_of(decoded)
-                # if find_urls_conf: find_urls(str(decoded))
-                # TODO
-            elif "quoted-printable" in p_headers["Content-Transfer-Encoding"]:
-                # Encoded 7-bit ASCII
-                # join preserving \n because while it is useful not to have \n in base64, newlines are needed
-                # to correctly process the body in quoted-printable elements (e.g. HTML code) https://www.rfc-editor.org/rfc/rfc2045#section-6.7
-                body = ''.join(to_process[p_body_start:])
-                decoded = quopri.decodestring(body).decode("utf-8")
-                logger.log(body)
-                print(decoded)
-                utils.find_urls(decoded)
-                # TODO
-            elif "7bit" in p_headers["Content-Transfer-Encoding"]:
-                # Unencoded 7-bit ASCII
-                print("7bit")
-                # TODO
-            elif "8bit" in p_headers["Content-Transfer-Encoding"]:
-                # Unencoded 8-bit ASCII
-                print("8bit")
-                # TODO
-            elif "binary" in p_headers["Content-Transfer-Encoding"]:
-                # Any data acceptable, no restrictions on character set
-                print("binary")
-                hashes_of(body)
-                # TODO
         print("__END_ANALYSIS_PAY__" + str(nest_level) + "_" + str(i))
 
 
@@ -238,7 +171,7 @@ def execute(email_path, config):
         content_lines = email.readlines()
         email.seek(0)
         whole_content = email.read()
-    
+
     # initialize objects
     logger = Logger(config["debug"])
     utils = Utils(logger, config["find_urls"])
@@ -252,7 +185,7 @@ def execute(email_path, config):
 
     if len(payloads) > 0:
         if config["print_payload"]: print_parsed_payloads(payloads)
-        if config["payload_analysis"]: process_payloads(payloads, utils, logger)
+        if config["payload_analysis"]: process_payloads(payloads, utils, logger, payload_strategies)
     elif len(payloads) == 0:
         if config["print_payload"]: print_text_plain(whole_content)
 
