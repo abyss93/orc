@@ -1,0 +1,78 @@
+Return-Path: <XXXXXXX@XXXXXXX.XXXXXXX>
+Received: from XXXXXXX (XXXXXXX [XX.XX.XX.XX])
+        by XXXXXXX with ESMTPSA id XXXXXXX
+        for <XXXXXXX@XXXXXXX.XXXXXXX>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 27 Nov 2022 10:12:34 -0800 (PST)
+Received: by XXXXXXX (Postfix, from XXXXXXX XXXXXXX)
+	id XXXXXXX; Sun, 27 Nov 2022 19:12:33 +0100 (CET)
+Date: Sun, 27 Nov 2022 19:12:33 +0100
+From: XXXXXXX@XXXXXXX.XXXXXXX
+To: XXXXXXX@XXXXXXX.XXXXXXX
+Message-ID: <XXXXXXX@XXXXXXX-XXXXXXX.XXXXXXX>
+Subject: TEST quoted printable
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="--==_mimepart_9999999999999_88888888-777";
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+
+----==_mimepart_9999999999999_88888888-777
+Content-Type: text/html;
+ charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+=0D
+    <html>=0D
+        <head>=0D
+            <style>=0D
+                body {=0D
+                  font-family: Tahoma, Verdana, sans-serif;=0D
+                  font-size: 14px;=0D
+                }=0D
+                table.articles_table {=0D
+                  background-color: #FFFFFF;=0D
+                  width: 100%;=0D
+                  text-align: left;=0D
+                  border-collapse: collapse;=0D
+                }=0D
+                table.articles_table td, table.articles_table th {=0D
+                  border: 0px solid #AAAAAA;=0D
+                  padding: 5px 5px;=0D
+                  font-size: 13px;=0D
+                }=0D
+                table.articles_table tbody td {=0D
+                  font-size: 10px;=0D
+                }=0D
+                table.articles_table tr:nth-child(even) {=0D
+                  background: #D0E4F5;=0D
+                }=0D
+                table.articles_table thead {=0D
+                  background: #1C6EA4;=0D
+                  border-bottom: 2px solid #444444;=0D
+                }=0D
+                table.articles_table thead th {=0D
+                  font-size: 12px;=0D
+                  font-weight: bold;=0D
+                  color: #FFFFFF;=0D
+                }=0D
+            </style>=0D
+        </head>=0D
+        <body>=0D
+        <div class=3D"content">=0D
+            <table class=3D"articles_table"><tr><th>Feed</th><th>Source</=
+th><th>Topics</th></tr>=0D
+				<tr><td><a href=3D"https://www.bleepingcomputer.com/news/security/goo=
+gle-pushes-emergency-chrome-update-to-fix-8th-zero-day-in-2022/"><b>Googl=
+e pushes emergency Chrome update to fix 8th zero-day in 2022</b></a></td>=
+<td><i>BleepingComputer</i></td><td><i>google</i></td>=0D
+				<tr><td><a href=3D"https://thehackernews.com/2022/11/update-chrome-br=
+owser-now-to-patch-new.html"><b>Update Chrome Browser Now to Patch New Ac=
+tively Exploited Zero-Day Flaw</b></a></td><td><i>The Hacker News</i></td=
+><td><i>google</i></td>=0D
+            </table>=0D
+        </div>=0D
+    </html>=
+
+----==_mimepart_9999999999999_88888888-777--

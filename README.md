@@ -1,4 +1,4 @@
-<h1><img src="https://github.com/santinilorenzo/orc/blob/master/logo/orc.png?raw=true"> ORC</h1>
+<h1><img src="https://github.com/abyss93/orc/blob/master/logo/orc.png?raw=true"> ORC</h1>
 <h3>What is?</h3>
 Quick and dirty email forensic tool.
 
