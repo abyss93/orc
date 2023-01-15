@@ -5,8 +5,8 @@ class Logger:
         self.start_phrase = "DEBUG>>>"
         self.end_phrase = ">>>DEBUG"
 
-    def log(self, debug):
+    def log(self, debug_info, context=""):
         if self.debug_enabled:
-            print(self.start_phrase)
-            print(debug)
-            print(self.end_phrase)
+            print(context + self.start_phrase)
+            print(debug_info)
+            print(self.end_phrase + context)

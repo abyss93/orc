@@ -23,7 +23,10 @@ Content-Length                201921
 __ANALYSIS_PAYLOAD__0_0
 Content-Type                  text/plain;charset=us-ascii
 Content-Transfer-Encoding     7bit
-7bit
+
+
+
+
 __END_ANALYSIS_PAY__0_0
 __ANALYSIS_PAYLOAD__0_1
 Content-Type                  image/png;name=Trainer.png;x-apple-part-url=C932F17E-5B2B-4DB8-A5B5-74BB1ACA78A8
@@ -38,5 +41,8 @@ __END_ANALYSIS_PAY__0_1
 __ANALYSIS_PAYLOAD__0_2
 Content-Type                  text/plain;charset=us-ascii
 Content-Transfer-Encoding     7bit
-7bit
+
+
+Inviato da iPhone
+
 __END_ANALYSIS_PAY__0_2

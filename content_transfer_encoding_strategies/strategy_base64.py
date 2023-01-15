@@ -7,7 +7,7 @@ class StrategyBase64:
         self.logger = logger
         self.utils = utils
 
-    def process(self, to_process, p_body_start):
+    def process(self, content_type, to_process, p_body_start):
         # Encoded 7-bit ASCII
         body = ''.join(to_process[p_body_start:]).replace("\n", "")
         decoded = base64.b64decode(body)

@@ -7,7 +7,7 @@ class StrategyQuotedPrintable:
         self.logger = logger
         self.utils = utils
 
-    def process(self, to_process, p_body_start):
+    def process(self, content_type, to_process, p_body_start):
         # Encoded 7-bit ASCII
         # join preserving \n because while it is useful not to have \n in base64, newlines are needed
         # to correctly process the body in quoted-printable elements (e.g. HTML code) https://www.rfc-editor.org/rfc/rfc2045#section-6.7

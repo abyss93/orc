@@ -1,0 +1,240 @@
+Return-Path: X
+Received: X
+Content-Type: multipart/alternative;
+ boundary="------------bXBXbZ4jSsF8vbJXtYSBIok0"
+Message-ID: X
+Date: Fri, 13 Jan 2023 23:28:32 +0100
+MIME-Version: 1.0
+User-Agent: X
+Content-Language: en-US
+To: X
+From: X
+Subject: Test URLs and plain text body
+
+This is a multi-part message in MIME format.
+--------------bXBXbZ4jSsF8vbJXtYSBIok0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+TEST PLAIN TEXT
+
+
+
+Lorem ipsum dolor sit amet, consectetur adipisci elit, sed do eiusmod 
+tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim 
+veniam, quis nostrum exercitationem ullamco laboriosam, nisi ut aliquid 
+ex ea commodi consequatur. Duis aute irure reprehenderit in voluptate 
+velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint 
+obcaecat cupiditat non proident, sunt in culpa qui officia deserunt 
+mollit anim id est laborum.
+
+________________________________________
+
+
+TEST URLS
+
+
+http://foo.com/blah_blah
+http://foo.com/blah_blah/
+http://foo.com/blah_blah_(wikipedia)
+http://foo.com/blah_blah_(wikipedia)_(again)
+http://www.example.com/wpstyle/?p=364
+https://www.example.com/foo/?bar=baz&inga=42&quux
+http://userid:password@example.com:8080
+http://userid:password@example.com:8080/
+http://userid@example.com
+http://userid@example.com/
+http://userid@example.com:8080
+http://userid@example.com:8080/
+http://userid:password@example.com
+http://userid:password@example.com/
+http://142.42.1.1/
+http://142.42.1.1:8080/
+http://foo.com/blah_(wikipedia)#cite-1
+http://foo.com/blah_(wikipedia)_blah#cite-1
+http://foo.com/(something)?after=parens
+http://code.google.com/events/#&product=browser
+http://j.mp
+ftp://foo.bar/baz
+http://foo.bar/?q=Test%20URL-encoded%20stuff
+http://-.~_!$&'()*+,;=:%40:80%2f::::::@example.com
+http://1337.net
+http://a.b-c.de
+http://223.255.255.254
+https://foo_bar.example.com/
+www.example.com/foo/?bar=baz&inga=42&quux
+example.com/foo/?bar=baz&inga=42&quux
+--------------bXBXbZ4jSsF8vbJXtYSBIok0
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+<html>
+  <head>
+
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  </head>
+  <body>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 97.8346px; font-size: 20px; transform:
+        scaleX(0.859947);" role="presentation" dir="ltr">TEST PLAIN TEXT</span></font><br>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 97.8346px; font-size: 20px; transform:
+        scaleX(0.859947);" role="presentation" dir="ltr"></span></font><br>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 97.8346px; font-size: 20px; transform:
+        scaleX(0.859947);" role="presentation" dir="ltr"></span></font><br>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 97.8346px; font-size: 20px; transform:
+        scaleX(0.859947);" role="presentation" dir="ltr"></span></font><br>
+    <p><font face="Courier New, Courier, monospace"><font size="6">Lorem
+          ipsum dolor sit amet, consectetur adipisci elit, sed do
+          eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut
+          enim ad minim veniam, quis nostrum exercitationem ullamco
+          laboriosam, nisi ut aliquid ex ea commodi consequatur. Duis
+          aute irure reprehenderit in voluptate velit esse cillum dolore
+          eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat
+          non proident, sunt in culpa qui officia deserunt mollit anim
+          id est laborum.</font></font></p>
+    <p><font face="Courier New, Courier, monospace"><font size="6">________________________________________<br>
+          <span style="left: 94.6667px; top: 97.8346px; font-size: 20px;
+            transform: scaleX(0.859947);" role="presentation" dir="ltr"></span></font></font></p>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 97.8346px; font-size: 20px; transform:
+        scaleX(0.859947);" role="presentation" dir="ltr"></span></font><br>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 97.8346px; font-size: 20px; transform:
+        scaleX(0.859947);" role="presentation" dir="ltr">TEST URLS</span></font><br>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 97.8346px; font-size: 20px; transform:
+        scaleX(0.859947);" role="presentation" dir="ltr"><br>
+      </span></font><br>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 143.835px; font-size: 20px; transform:
+        scaleX(0.80414);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://foo.com/blah_blah">http://foo.com/blah_blah</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 166.835px; font-size: 20px; transform:
+        scaleX(0.804636);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://foo.com/blah_blah/">http://foo.com/blah_blah/</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 189.835px; font-size: 20px; transform:
+        scaleX(0.811991);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://foo.com/blah_blah_(wikipedia)">http://foo.com/blah_blah_(wikipedia)</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 212.835px; font-size: 20px; transform:
+        scaleX(0.812986);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://foo.com/blah_blah_(wikipedia)_(again)">http://foo.com/blah_blah_(wikipedia)_(again)</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 235.835px; font-size: 20px; transform:
+        scaleX(0.797146);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://www.example.com/wpstyle/?p=364">http://www.example.com/wpstyle/?p=364</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 258.835px; font-size: 20px; transform:
+        scaleX(0.796102);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="https://www.example.com/foo/?bar=baz&amp;inga=42&amp;quux">https://www.example.com/foo/?bar=baz&amp;inga=42&amp;quux</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 304.835px; font-size: 20px; transform:
+        scaleX(0.791765);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://userid:password@example.com:8080">http://userid:password@example.com:8080</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 327.835px; font-size: 20px; transform:
+        scaleX(0.792232);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://userid:password@example.com:8080/">http://userid:password@example.com:8080/</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 350.835px; font-size: 20px; transform:
+        scaleX(0.795321);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://userid@example.com">http://userid@example.com</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 373.835px; font-size: 20px; transform:
+        scaleX(0.795828);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://userid@example.com/">http://userid@example.com/</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 396.835px; font-size: 20px; transform:
+        scaleX(0.794281);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://userid@example.com:8080">http://userid@example.com:8080</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 419.835px; font-size: 20px; transform:
+        scaleX(0.794839);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://userid@example.com:8080/">http://userid@example.com:8080/</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 442.835px; font-size: 20px; transform:
+        scaleX(0.79178);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://userid:password@example.com">http://userid:password@example.com</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 465.835px; font-size: 20px; transform:
+        scaleX(0.792572);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://userid:password@example.com/">http://userid:password@example.com/</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 488.835px; font-size: 20px; transform:
+        scaleX(0.781782);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://142.42.1.1/">http://142.42.1.1/</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 511.835px; font-size: 20px; transform:
+        scaleX(0.784382);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://142.42.1.1:8080/">http://142.42.1.1:8080/</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 606.001px; font-size: 20px; transform:
+        scaleX(0.799555);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://foo.com/blah_(wikipedia)#cite-1">http://foo.com/blah_(wikipedia)#cite-1</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 629.001px; font-size: 20px; transform:
+        scaleX(0.802541);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://foo.com/blah_(wikipedia)_blah#cite-1">http://foo.com/blah_(wikipedia)_blah#cite-1</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 675.001px; font-size: 20px; transform:
+        scaleX(0.781742);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://foo.com/(something)?after=parens">http://foo.com/(something)?after=parens</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 721.001px; font-size: 20px; transform:
+        scaleX(0.776947);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://code.google.com/events/#&amp;product=browser">http://code.google.com/events/#&amp;product=browser</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 744.001px; font-size: 20px; transform:
+        scaleX(0.788394);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://j.mp">http://j.mp</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 767.001px; font-size: 20px; transform:
+        scaleX(0.797328);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="ftp://foo.bar/baz">ftp://foo.bar/baz</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 790.001px; font-size: 20px; transform:
+        scaleX(0.802077);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://foo.bar/?q=Test%20URL-encoded%20stuff">http://foo.bar/?q=Test%20URL-encoded%20stuff</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 864.835px; font-size: 20px; transform:
+        scaleX(0.808844);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://-.~_!$&amp;'()*+,;=:%40:80%2f::::::@example.com">http://-.~_!$&amp;'()*+,;=:%40:80%2f::::::@example.com</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 887.835px; font-size: 20px; transform:
+        scaleX(0.771212);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://1337.net">http://1337.net</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 910.835px; font-size: 20px; transform:
+        scaleX(0.781966);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://a.b-c.de">http://a.b-c.de</a></span></font><br
+      role="presentation">
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 933.835px; font-size: 20px; transform:
+        scaleX(0.781849);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="http://223.255.255.254">http://223.255.255.254</a></span></font><br>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 956.835px; font-size: 20px; transform:
+        scaleX(0.80114);" role="presentation" dir="ltr"><a class="moz-txt-link-freetext" href="https://foo_bar.example.com/">https://foo_bar.example.com/</a></span><span
+        style="left: 94.6667px; top: 258.835px; font-size: 20px;
+        transform: scaleX(0.796102);" role="presentation" dir="ltr"></span></font><br>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 258.835px; font-size: 20px; transform:
+        scaleX(0.796102);" role="presentation" dir="ltr"><a class="moz-txt-link-abbreviated" href="http://www.example.com/foo/?bar=baz&amp;inga=42&amp;quux">www.example.com/foo/?bar=baz&amp;inga=42&amp;quux</a></span></font><font
+      face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 956.835px; font-size: 20px; transform:
+        scaleX(0.80114);" role="presentation" dir="ltr"></span></font><br>
+    <font face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 258.835px; font-size: 20px; transform:
+        scaleX(0.796102);" role="presentation" dir="ltr">example.com/foo/?bar=baz&amp;inga=42&amp;quux</span></font><font
+      face="Courier New, Courier, monospace"><span style="left:
+        94.6667px; top: 956.835px; font-size: 20px; transform:
+        scaleX(0.80114);" role="presentation" dir="ltr"></span></font>
+    <div id="dialogContainer"> </div>
+    <font face="Courier New, Courier, monospace"> </font>
+  </body>
+</html>
+
+--------------bXBXbZ4jSsF8vbJXtYSBIok0--

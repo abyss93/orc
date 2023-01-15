@@ -11,6 +11,7 @@ from content_transfer_encoding_strategies.strategy_binary import StrategyBinary
 from content_transfer_encoding_strategies.strategy_quoted_printable import StrategyQuotedPrintable
 from utils.logger import Logger
 from utils.utils import Utils
+from view.terminal_view import TerminalView
 
 
 def find_boundary(content, logger):
@@ -88,26 +89,6 @@ def parse_payload(whole_content, boundary, logger):
     return []  # no payloads defined with boundaries
 
 
-# https://www.rfc-editor.org/rfc/rfc5321.html#section-4.4
-# https://www.rfc-editor.org/rfc/rfc7489#section-3.1.1
-# https://stackoverflow.com/questions/21480430/can-a-message-have-multiple-senders
-def print_headers(headers):
-    for k, v in headers.items():
-        if isinstance(v, list):
-            for i, r in enumerate(v):
-                print("{:<30}".format(k), end="")
-                print("{:}".format(r))
-        else:
-            print("{:<60}{:<50}".format(k, v))
-
-
-def print_parsed_payloads(payloads):
-    for i, p in enumerate(payloads):
-        print("__PAYLOAD__" + str(i))
-        print(p)
-        print("__END_PAY__" + str(i))
-
-
 def parse_email(content_lines, whole_content, logger):
     boundary = find_boundary(content_lines, logger)
     headers = parse_headers(content_lines, boundary, logger)
@@ -115,7 +96,7 @@ def parse_email(content_lines, whole_content, logger):
     return headers, payloads
 
 
-def process_payloads(payloads, utils, logger, payload_strategies, nest_level=-1):
+def process_payloads(payloads, utils, logger, payload_strategies, view, nest_level=-1):
     nest_level += 1
     for i, p in enumerate(payloads):
         print("__ANALYSIS_PAYLOAD__" + str(nest_level) + "_" + str(i))
@@ -125,7 +106,7 @@ def process_payloads(payloads, utils, logger, payload_strategies, nest_level=-1)
             True)  # I want newline chars during header processing, parse_headers need them to find the header section end
         logger.log("process_payloads to_process splitlines|" + str(to_process))
         p_headers = parse_headers(to_process, None, logger)
-        print_headers(p_headers)
+        view.print_headers(p_headers)
         p_body_start = to_process.index(
             '\n') + 1  # find the first blank line, that is the one between headers and body, and add 1
         # TODO refactor: strategy and factory pattern can be applied here
@@ -136,23 +117,14 @@ def process_payloads(payloads, utils, logger, payload_strategies, nest_level=-1)
                 "boundary" in p_headers["Content-Type"][0]:  # [0] -> only one Content-Type is admitted
             # nested payload, another boundary
             nested_headers, nested_payloads = parse_email(to_process, p, logger)
-            process_payloads(nested_payloads, utils, logger, payload_strategies, nest_level)
+            process_payloads(nested_payloads, utils, logger, payload_strategies, view, nest_level)
         if p_headers is not None and "Content-Transfer-Encoding" in p_headers:
             try:
-                payload_strategies[p_headers["Content-Transfer-Encoding"][0]].process(to_process, p_body_start)
+                payload_strategies[p_headers["Content-Transfer-Encoding"][0]].process(p_headers["Content-Type"][0],
+                                                                                      to_process, p_body_start)
             except KeyError:
                 print("Error: invalid Content-Transfer-Encoding header value")
-
         print("__END_ANALYSIS_PAY__" + str(nest_level) + "_" + str(i))
-
-
-def print_text_plain(whole_content):
-    print("____TEXT_PLAIN____")
-    whole_content_lines = whole_content.splitlines(True)
-    text_plain_index = whole_content_lines.index("\n") + 1  # end of headers section, plus 1 to exclude the \n line
-    text_plain = "".join(whole_content_lines[text_plain_index:])
-    print(text_plain)
-    print("__END_TEXT_PLAIN__")
 
 
 def forensic(headers, whole_content):
@@ -177,37 +149,42 @@ def execute(email_path, config):
     utils = Utils(logger, config["find_urls"])
     payload_strategies = {"base64": StrategyBase64(config, logger, utils),
                           "quoted-printable": StrategyQuotedPrintable(config, logger, utils),
-                          "7bit": Strategy7bit(logger), "8bit": Strategy8bit(logger),
+                          "7bit": Strategy7bit(logger, utils), "8bit": Strategy8bit(logger),
                           "binary": StrategyBinary(logger, utils)}
+    view = TerminalView(config["color"])
 
     headers, payloads = parse_email(content_lines, whole_content, logger)
-    if config["headers"]: print_headers(headers)
+    if config["headers"]: view.print_headers(headers)
 
     if len(payloads) > 0:
-        if config["print_payload"]: print_parsed_payloads(payloads)
-        if config["payload_analysis"]: process_payloads(payloads, utils, logger, payload_strategies)
+        if config["print_payload"]: view.print_parsed_payloads(payloads)
+        if config["payload_analysis"]: process_payloads(payloads, utils, logger, payload_strategies, view)
     elif len(payloads) == 0:
-        if config["print_payload"]: print_text_plain(whole_content)
+        view.print_text_plain(whole_content)
+        utils.find_urls(whole_content)
 
     # forensic(headers, whole_content)
 
 
 if __name__ == "__main__":
-    LOGO = "           ▄▄▄   ▄▄·\n" \
-           "     ▪     ▀▄ █·▐█ ▌▪\n" \
-           "      ▄█▀▄ ▐▀▀▄ ██ ▄▄\n" \
-           "     ▐█▌.▐▌▐█•█▌▐███▌\n" \
-           "      ▀█▄▀▪.▀  ▀·▀▀▀\n" \
-           "_____________________\n"
+    LOGO = "\033[35m           ▄▄▄   ▄▄·\033[0m\n" \
+           "\033[35m     ▪     ▀▄ █·▐█ ▌▪\033[0m\n" \
+           "\033[35m      ▄█▀▄ ▐▀▀▄ ██ ▄▄\033[0m\n" \
+           "\033[35m     ▐█▌.▐▌▐█•█▌▐███▌\033[0m\n" \
+           "\033[35m      ▀█▄▀▪.▀  ▀·▀▀▀\033[0m\n" \
+           "\033[35m -- Email Forensic Tool --\033[0m\n"
 
     parser = argparse.ArgumentParser(description="Email forensic tool",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
-    parser.add_argument("email_path", type=str, help="Path of the email to analyze")
-    parser.add_argument("-H", "--headers", help="Print email headers in a friendly way", action="store_true")
+    parser.add_argument("email_path", type=str, help="Path of the email to analyze (EML format)")
+    parser.add_argument("-H", "--headers", help="Print email headers in a friendly way", action="store_true",
+                        default=True)
     parser.add_argument("-p", "--print-payload", help="Print email payloads as they are", action="store_true")
     parser.add_argument("-a", "--payload-analysis", help="Payload analysis", action="store_true")
     parser.add_argument("-u", "--find-urls", help="Search for URLs", action="store_true")
     parser.add_argument("-d", "--debug", help="Debug info to stdout", action="store_true")
+    parser.add_argument("-c", "--color", help="Some output sections are printed using terminal colors",
+                        action="store_true")
     args = parser.parse_args()
     config_args = vars(args)
     print(LOGO)

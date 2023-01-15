@@ -20,7 +20,7 @@ class Utils:
     def find_urls(self, string_to_check):
         if self.find_urls_enabled:
             urls = re.findall(
-                r"((http|https)?:\/\/[www]?\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
+                r"((http:|https:|ftp:)?(\/\/)?[www]?\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
                 string_to_check)
             if urls is not None and len(urls) > 0:
                 print("____URLs____")

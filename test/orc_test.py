@@ -19,7 +19,7 @@ class TestOrc(TestCase):
             orc.execute("test_attachments_pdf_png_multipart",
                         {'email_path': 'test_attachments_pdf_png_multipart', 'headers': True, 'print_payload': False,
                          'payload_analysis': True,
-                         'find_urls': True, 'debug': False})
+                         'find_urls': True, 'debug': False, 'color': False})
             self.assertEqual(fake_out.getvalue(), self.get_expected("test_attachments_pdf_png_multipart_expected"))
 
     def test_execute_2(self):
@@ -28,7 +28,7 @@ class TestOrc(TestCase):
                         {'email_path': 'test_boundary_not_enclosed_in_quotation_marks', 'headers': True,
                          'print_payload': False,
                          'payload_analysis': True,
-                         'find_urls': False, 'debug': False})
+                         'find_urls': False, 'debug': False, 'color': False})
             self.assertEqual(self.get_expected("test_boundary_not_enclosed_in_quotation_marks_expected"),
                              fake_out.getvalue())
 
@@ -102,7 +102,7 @@ __END_ANALYSIS_PAY__0_0
             orc.execute("test_quoted_printable",
                         {'email_path': 'test_quoted_printable', 'headers': True, 'print_payload': False,
                          'payload_analysis': True,
-                         'find_urls': True, 'debug': False})
+                         'find_urls': True, 'debug': False, 'color': False})
             self.assertEqual(fake_out.getvalue().replace("\r", ""), expected)
             # if I don't remove carriage return test fails even if output are visually equal
 
@@ -159,3 +159,18 @@ Content-Transfer-Encoding: 7bit
                         'multipart/mixed;boundary="--==_mimepart_9999999999999_88888888-777";charset=UTF-8'],
                     'Content-Transfer-Encoding': ['7bit']}
         self.assertEqual(expected, result)
+
+    def test_parse_header_Received_SPF_becomes_one_line(self):
+        # given
+        content_lines = """Received-SPF: pass (mybox.example.org: domain of
+    myname@example.com designates 192.0.2.1 as permitted sender)
+       receiver=mybox.example.org; client-ip=192.0.2.1;
+       envelope-from="myname@example.com"; helo=foo.example.com;""".splitlines()
+
+        # when
+        result = orc.parse_headers(content_lines, "", self.logger)
+
+        # then
+        expected = {'Received-SPF': [
+            "pass (mybox.example.org: domain of myname@example.com designates 192.0.2.1 as permitted sender) receiver=mybox.example.org; client-ip=192.0.2.1; envelope-from=\"myname@example.com\"; helo=foo.example.com;"]}
+        self.assertEqual(expected["Received-SPF"][0], result["Received-SPF"][0])

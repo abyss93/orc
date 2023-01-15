@@ -3,7 +3,7 @@ class StrategyBinary:
         self.logger = logger
         self.hash_service = hash_service
 
-    def process(self, to_process, p_body_start):
+    def process(self, content_type, to_process, p_body_start):
         # Unencoded 8-bit ASCII
         # TODO
         print("8bit")
