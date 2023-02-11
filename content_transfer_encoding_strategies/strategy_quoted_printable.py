@@ -14,6 +14,6 @@ class StrategyQuotedPrintable:
         body = ''.join(to_process[p_body_start:])
         decoded = quopri.decodestring(body).decode("utf-8")
         if self.config["debug"]: self.logger.log(body)
-        print(decoded)
+        print(decoded) # fa rumore, forse posso togliere il print e fixare i test
         if self.config["find_urls"]: self.utils.find_urls(decoded)
         # TODO

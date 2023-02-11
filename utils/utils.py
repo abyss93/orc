@@ -18,12 +18,31 @@ class Utils:
         print("__END_HASHES__")
 
     def find_urls(self, string_to_check):
+        res = []
         if self.find_urls_enabled:
             urls = re.findall(
                 r"((http:|https:|ftp:)?(\/\/)?[www]?\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
                 string_to_check)
             if urls is not None and len(urls) > 0:
-                print("____URLs____")
                 for url in urls:
-                    print(url[0].replace(".", "[.]").replace(":", ": "))
-                print("__END_URLs__")
+                    res.append(url[0].replace(".", "[.]").replace(":", "[:]"))
+            res = list(dict.fromkeys(res))
+            print("____URLs____")
+            for r in res:
+                print(r)
+            print("__END_URLs__")
+        return res
+
+    def find_urls_html(self, html):
+        res = []
+        if self.find_urls_enabled:
+            urls = re.findall("(?<=href=\")(.*?)(?=\")", html)
+            if urls is not None and len(urls) > 0:
+                for url in urls:
+                    res.append(url.replace(".", "[.]").replace(":", "[:]"))
+            res = list(dict.fromkeys(res))
+            print("____URLs____")
+            for r in res:
+                print(r)
+            print("__END_URLs__")
+        return res

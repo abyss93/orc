@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import argparse
-import base64
 import re
 
 from content_transfer_encoding_strategies.strategy_7bit import Strategy7bit
@@ -11,6 +10,7 @@ from content_transfer_encoding_strategies.strategy_binary import StrategyBinary
 from content_transfer_encoding_strategies.strategy_quoted_printable import StrategyQuotedPrintable
 from utils.logger import Logger
 from utils.utils import Utils
+from view.UI import UI
 from view.terminal_view import TerminalView
 
 
@@ -137,6 +137,25 @@ def forensic(headers, whole_content):
         print(len(payloads_as_string))
 
 
+def payload_structure(to_analyze, res):
+    b_check_1 = re.search("boundary=(\".+\")", to_analyze)
+    b_check_2 = re.search("boundary=.+", to_analyze)
+    b = ""
+    if b_check_1:
+        b = b_check_1[0].replace("boundary=\"", "").replace("\"", "")
+        if b != "": to_analyze = to_analyze.replace("boundary=\"" + b + "\"", b)
+    elif b_check_2:  # sometimes boundary is not enclosed in a couple of "
+        b = b_check_2[0].replace("boundary=", "")
+        if b != "": to_analyze = to_analyze.replace("boundary=" + b, b)
+    if b != "":
+        res[b] = {}
+        for i, section in enumerate(to_analyze.split("--" + b + "\n")):
+            section_lines = section.splitlines(True)
+            if "boundary" not in section_lines[0]:
+                res[b][i] = parse_headers(section_lines, "", Logger(False))
+            payload_structure(section, res[b])
+    return res
+
 def execute(email_path, config):
     # read email file
     with open(email_path, mode="rt", encoding="utf-8") as email:
@@ -163,6 +182,9 @@ def execute(email_path, config):
         view.print_text_plain(whole_content)
         utils.find_urls(whole_content)
 
+    if config["user_interface"]:
+        ui = UI()
+        ui.render(headers)
     # forensic(headers, whole_content)
 
 
@@ -185,6 +207,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--debug", help="Debug info to stdout", action="store_true")
     parser.add_argument("-c", "--color", help="Some output sections are printed using terminal colors",
                         action="store_true")
+    parser.add_argument("-x", "--user-interface", help="Display Headers in a window", action="store_true")
     args = parser.parse_args()
     config_args = vars(args)
     print(LOGO)

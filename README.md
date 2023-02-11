@@ -42,4 +42,7 @@ Opening mail with this tool should be safe enough, EML files are read and interp
 <li>Code quality (remove duplication, use patterns, etc) and test coverage</li>
 <li>Better debug output</li>
 <li>Colors stdout</li>
+<li>UI</li>
+<li>X-Headers analysis</li>
+<li>dig txt record to better investigate sender DNS</li>
 </ul>
