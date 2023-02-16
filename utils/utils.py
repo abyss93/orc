@@ -21,7 +21,7 @@ class Utils:
         res = []
         if self.find_urls_enabled:
             urls = re.findall(
-                r"((http:|https:|ftp:)?(\/\/)?[www]?\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
+                r"((http:\/\/|https:\/\/|ftp:\/\/|www.)\.?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b[-a-zA-Z0-9()@:%_\+.~#?&//=]*)",
                 string_to_check)
             if urls is not None and len(urls) > 0:
                 for url in urls:
