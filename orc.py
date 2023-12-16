@@ -116,7 +116,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="\033[35m -- ORC -- Email Forensic Tool --\033[0m\n",
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument("email_path", type=str, help="Path of the email to analyze (EML format)")
-    parser.add_argument("-H", "--headers", help="Print email headers in a friendly way (DEFAULT: enabled)",
+    parser.add_argument("-H", "--headers", help="Print email headers in a friendly way",
                         action="store_true",
                         default=True)
     parser.add_argument("-p", "--print-payload", help="Print email payloads as they are", action="store_true")
