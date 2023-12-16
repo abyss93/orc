@@ -20,8 +20,8 @@ class TestOrc(TestCase):
         # given
         with patch('sys.stdout', new=StringIO()) as fake_out:
             # when
-            orc.execute("test_attachments_pdf_png_multipart",
-                        {'email_path': 'test_attachments_pdf_png_multipart', 'headers': True, 'print_payload': False,
+            orc.execute("./test_attachments_pdf_png_multipart.eml",
+                        {'email_path': 'test_attachments_pdf_png_multipart.eml', 'headers': True, 'print_payload': False,
                          'payload_analysis': True,
                          'find_urls': True, 'debug': False, 'color': False, 'user_interface': False})
             # then
@@ -31,8 +31,8 @@ class TestOrc(TestCase):
         # given
         with patch('sys.stdout', new=StringIO()) as fake_out:
             # when
-            orc.execute("test_boundary_not_enclosed_in_quotation_marks",
-                        {'email_path': 'test_boundary_not_enclosed_in_quotation_marks', 'headers': True,
+            orc.execute("test_boundary_not_enclosed_in_quotation_marks.eml",
+                        {'email_path': 'test_boundary_not_enclosed_in_quotation_marks.eml', 'headers': True,
                          'print_payload': False,
                          'payload_analysis': True,
                          'find_urls': False, 'debug': False, 'color': False, 'user_interface': False})
@@ -107,8 +107,8 @@ __END_URLs__
 __END_ANALYSIS_PAY__0_0
 """
         with patch('sys.stdout', new=StringIO()) as fake_out:
-            orc.execute("test_quoted_printable",
-                        {'email_path': 'test_quoted_printable', 'headers': True, 'print_payload': False,
+            orc.execute("test_quoted_printable.eml",
+                        {'email_path': 'test_quoted_printable.eml', 'headers': True, 'print_payload': False,
                          'payload_analysis': True,
                          'find_urls': True, 'debug': False, 'color': False, 'user_interface': False})
             self.assertEqual(fake_out.getvalue().replace("\r", ""), expected)
@@ -116,7 +116,7 @@ __END_ANALYSIS_PAY__0_0
 
     def test_parse_headers(self):
         # given
-        with open('./test_quoted_printable', mode="rt", encoding="utf-8") as email:
+        with open('test_quoted_printable.eml', mode="rt", encoding="utf-8") as email:
             content_lines = email.readlines()
         boundary = "--==_mimepart_9999999999999_88888888-777"
 
@@ -352,7 +352,7 @@ Content-Transfer-Encoding: 7bit
         p_body_start = 3
 
         # when
-        result = sut.process(["text/html"], to_process, 3)
+        result = sut.process(["text/html"], to_process)
 
         # then
         expected = [
